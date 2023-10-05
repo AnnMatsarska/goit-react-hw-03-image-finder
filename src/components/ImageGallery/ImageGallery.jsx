@@ -7,7 +7,7 @@ import { Button } from '../Button/Button';
 import { Loader } from '../Loader/Loader';
 import { Modal } from 'components/Modal/Modal';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { notifications } from '../notifications/notifications';
@@ -53,13 +53,9 @@ export class ImageGallery extends Component {
         totalImages: prevState.totalImages + fetchedImages.hits.length,
       }));
       if (fetchedImages.totalHits === 0) {
-        return await Promise.reject(
-          new Error(
-            toast.warn(
-              'Sorry, there are no images matching your search query. Please try again.',
-              notifications
-            )
-          )
+        return toast.warn(
+          'Sorry, there are no images matching your search query. Please try again.',
+          notifications
         );
       }
     } catch (error) {
@@ -67,7 +63,6 @@ export class ImageGallery extends Component {
         status: REJECTED,
         error: toast.error(error.message, notifications),
       });
-      console.log(error);
     }
   };
 
@@ -121,10 +116,14 @@ export class ImageGallery extends Component {
       );
     }
     if (status === PENDING) {
-      return <Loader />;
+      return (
+        <>
+          <Loader />
+        </>
+      );
     }
     if (status === REJECTED) {
-      return <ToastContainer />;
+      return <></>;
     }
   }
 }
