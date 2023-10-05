@@ -2,7 +2,9 @@ import styled from 'styled-components';
 
 export const LoadMore = styled.button`
   padding: 8px 16px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 16px;
   border-radius: 5px;
   background-color: #3f51b5;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);

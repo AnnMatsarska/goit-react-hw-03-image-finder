@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const SearchBar = styled.header`
+export const Header = styled.header`
   top: 0;
   left: 0;
   position: sticky;
@@ -32,10 +32,10 @@ export const Form = styled.form`
 
 export const Button = styled.button`
   display: inline-block;
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   border: 0;
-  padding: 2px;
+  padding: 13px;
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;
