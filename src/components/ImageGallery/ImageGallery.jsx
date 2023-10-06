@@ -34,7 +34,7 @@ export class ImageGallery extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.searchedQuery !== this.props.searchedQuery) {
-      this.setState({ images: [] });
+      this.setState({ status: PENDING, images: [] });
       this.fetchImages(this.props.searchedQuery);
     }
     if (prevState.page !== this.state.page && this.state.status === RESOLVED) {
@@ -44,7 +44,6 @@ export class ImageGallery extends Component {
 
   fetchImages = async (searchedQuery, page) => {
     try {
-      this.setState({ status: PENDING });
       const fetchedImages = await fetchImages(searchedQuery, page);
       this.setState(prevState => ({
         images: [...prevState.images, ...fetchedImages.hits],
