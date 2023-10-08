@@ -11,118 +11,114 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { notifications } from '../notifications/notifications';
-import { animateScroll } from 'react-scroll';
 
-const STATUS = {
-  IDLE: 'idle',
-  PENDING: 'pending',
-  RESOLVED: 'resolved',
-  REJECTED: 'rejected',
-};
-const { IDLE, PENDING, RESOLVED, REJECTED } = STATUS;
 export class ImageGallery extends Component {
   state = {
-    images: [],
-    error: null,
-    status: IDLE,
-    loadMore: false,
     page: 1,
-    totalImages: 0,
-    showModal: false,
+    images: [],
     largeImage: '',
+
+    error: null,
+
+    isLoading: false,
+    isLoadMore: false,
+    isNeedShowModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const { page } = this.state;
+
     if (prevProps.searchedQuery !== this.props.searchedQuery) {
-      this.setState({ status: PENDING, images: [] });
-      this.fetchImages(this.props.searchedQuery);
-    }
-    if (prevState.page !== this.state.page && this.state.status === RESOLVED) {
-      this.fetchImages(this.props.searchedQuery, this.state.page);
+      this.setState({ images: [] });
+      this.handleRender(this.props.searchedQuery, page);
+    } else if (prevState.page !== page) {
+      this.handleRender(this.props.searchedQuery, page);
     }
   }
 
-  fetchImages = async (searchedQuery, page) => {
+  handleRender = async (searchedQuery, page) => {
     try {
+      const { page } = this.state;
+
+      this.setState({ isLoading: true, isLoadMore: false });
+
       const fetchedImages = await fetchImages(searchedQuery, page);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...fetchedImages.hits],
-        status: RESOLVED,
-        loadMore: this.state.page < Math.ceil(fetchedImages.totalHits / 12),
-        totalImages: prevState.totalImages + fetchedImages.hits.length,
-      }));
-      if (fetchedImages.totalHits === 0) {
-        return toast.warn(
+      const result = fetchedImages.hits;
+
+      this.setState(prevState => {
+        return {
+          images: [...prevState.images, ...result],
+          isLoadMore: true,
+        };
+      });
+
+      if (fetchedImages.totalHits < 12 * page && page !== 1) {
+        this.setState({ isLoadMore: false });
+      }
+
+      if (result.length < 12 && page === 1) {
+        this.setState({ isLoadMore: false });
+      }
+
+      if (result.length === 0 && page === 1) {
+        toast.warn(
           'Sorry, there are no images matching your search query. Please try again.',
           notifications
         );
+        this.setState({ isMore: false });
       }
     } catch (error) {
       this.setState({
-        status: REJECTED,
         error: toast.error(error.message, notifications),
       });
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
 
   onLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-    this.scrollToBottom();
-  };
-
-  scrollToBottom = () => {
-    animateScroll.scrollToBottom({
-      duration: 1600,
-      delay: 10,
-      smooth: 'linear',
-    });
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      isLoadMore: false,
+    }));
   };
 
   openModal = largeImage => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
+    this.setState(({ isNeedShowModal }) => ({
+      isNeedShowModal: true,
       largeImage,
     }));
   };
+
   closeModal = () => {
-    this.setState({ showModal: false });
+    this.setState({ isNeedShowModal: false, largeImage: '' });
   };
 
   render() {
-    const { status, loadMore, images, showModal, largeImage } = this.state;
+    const { images, largeImage, isLoading, isLoadMore, isNeedShowModal } =
+      this.state;
 
-    if (status === RESOLVED) {
-      return (
-        <>
-          <ImageGalleryList>
-            {images.map(({ id, webformatURL, tags, largeImageURL }) => {
-              return (
-                <Item key={id} onClick={() => this.openModal(largeImageURL)}>
-                  <ImageGalleryItem webformatURL={webformatURL} tags={tags} />
-                </Item>
-              );
-            })}
-          </ImageGalleryList>
-          {loadMore && <Button onClick={this.onLoadMore} />}
-          {showModal && (
-            <Modal
-              largeImage={largeImage}
-              images={images}
-              closeModal={this.closeModal}
-            />
-          )}
-        </>
-      );
-    }
-    if (status === PENDING) {
-      return (
-        <>
-          <Loader />
-        </>
-      );
-    }
-    if (status === REJECTED) {
-      return <></>;
-    }
+    return (
+      <>
+        <ImageGalleryList>
+          {images.map(({ id, webformatURL, tags, largeImageURL }) => {
+            return (
+              <Item key={id} onClick={() => this.openModal(largeImageURL)}>
+                <ImageGalleryItem webformatURL={webformatURL} tags={tags} />
+              </Item>
+            );
+          })}
+        </ImageGalleryList>
+        {isLoading && <Loader />}
+        {isLoadMore && <Button onClick={this.onLoadMore} />}
+        {isNeedShowModal && (
+          <Modal
+            largeImage={largeImage}
+            images={images}
+            closeModal={this.closeModal}
+          />
+        )}
+      </>
+    );
   }
 }
