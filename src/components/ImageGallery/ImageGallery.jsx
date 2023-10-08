@@ -65,7 +65,7 @@ export class ImageGallery extends Component {
           'Sorry, there are no images matching your search query. Please try again.',
           notifications
         );
-        this.setState({ isMore: false });
+        this.setState({ isLoadMore: false });
       }
     } catch (error) {
       this.setState({
