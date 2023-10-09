@@ -14,7 +14,7 @@ export class Modal extends Component {
 
   handleClick = evt => {
     const { onClose } = this.props;
-    if (evt.currentTarget === evt.target || evt.code === 'Escape') {
+    if (evt.target.nodeName === 'DIV' || evt.code === 'Escape') {
       onClose();
     }
   };

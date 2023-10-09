@@ -16,7 +16,7 @@ export class App extends Component {
   state = {
     page: 1,
     images: [],
-    largeImage: '',
+    largeImage: {},
     query: '',
 
     error: null,
@@ -83,10 +83,10 @@ export class App extends Component {
     }));
   };
 
-  openModal = largeImage => {
-    this.setState(({ isNeedShowModal }) => ({
+  openModal = image => {
+    this.setState(() => ({
       isNeedShowModal: true,
-      largeImage,
+      largeImage: image,
     }));
   };
 
@@ -102,7 +102,7 @@ export class App extends Component {
       <>
         <Searchbar onSubmit={this.onSubmit} />
         {images.length !== 0 && (
-          <ImageGallery images={images} showModal={this.openModal} />
+          <ImageGallery images={images} openModal={this.openModal} />
         )}
         {isLoading && <Loader />}
         {isLoadMore && <Button onLoadMore={this.onLoadMore} />}

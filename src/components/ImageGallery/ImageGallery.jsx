@@ -1,4 +1,4 @@
-import { ImageGalleryList, Item } from './ImageGallery.styled';
+import { ImageGalleryList } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 
 export const ImageGallery = ({ images, openModal }) => {
@@ -7,9 +7,13 @@ export const ImageGallery = ({ images, openModal }) => {
       <ImageGalleryList>
         {images.map(({ id, webformatURL, tags, largeImageURL }) => {
           return (
-            <Item key={id} showModal={() => openModal(largeImageURL)}>
-              <ImageGalleryItem webformatURL={webformatURL} tags={tags} />
-            </Item>
+            <ImageGalleryItem
+              key={id}
+              webformatURL={webformatURL}
+              tags={tags}
+              openModal={openModal}
+              largeImageURL={largeImageURL}
+            />
           );
         })}
       </ImageGalleryList>
