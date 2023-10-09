@@ -15,7 +15,7 @@ export class Searchbar extends Component {
   handleSubmit = evt => {
     evt.preventDefault();
     const { query } = this.state;
-    if (query === '') {
+    if (query.trim() === '') {
       return toast.info('Please enter key words for search', notifications);
     }
 
