@@ -7,13 +7,8 @@ export const ImageGallery = ({ images, openModal }) => {
       <ImageGalleryList>
         {images.map(({ id, webformatURL, tags, largeImageURL }) => {
           return (
-            <Item key={id}>
-              <ImageGalleryItem
-                showModal={openModal}
-                largeImageURL={largeImageURL}
-                webformatURL={webformatURL}
-                tags={tags}
-              />
+            <Item key={id} showModal={() => openModal(largeImageURL)}>
+              <ImageGalleryItem webformatURL={webformatURL} tags={tags} />
             </Item>
           );
         })}
