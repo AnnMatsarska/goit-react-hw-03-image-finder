@@ -8,18 +8,14 @@ import { notifications } from '../notifications/notifications';
 import { FaSearch } from 'react-icons/fa';
 
 export class Searchbar extends Component {
-  state = {
-    value: '',
-  };
-
   handleSubmit = evt => {
+    const { onSubmit } = this.props;
     evt.preventDefault();
-    if (this.state.value.trim() === '') {
+    const query = evt.target.elements.query.value.trim();
+    onSubmit(query);
+    if (query === '') {
       return toast.info('Please enter key words for search', notifications);
     }
-
-    this.props.handleSearchedQuery(this.state.value);
-    this.setState({ value: '' });
   };
 
   handleChange = evt => {
@@ -35,8 +31,7 @@ export class Searchbar extends Component {
           </Button>
           <Input
             type="text"
-            name="searchQuery"
-            value={this.state.value}
+            name="query"
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
