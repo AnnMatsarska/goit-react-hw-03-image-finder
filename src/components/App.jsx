@@ -70,7 +70,7 @@ export class App extends Component {
 
   onSubmit = query => {
     this.setState({
-      query: query,
+      query,
       page: 1,
       images: [],
     });

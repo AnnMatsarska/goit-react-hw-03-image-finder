@@ -13,13 +13,10 @@ export class Searchbar extends Component {
     evt.preventDefault();
     const query = evt.target.elements.query.value.trim();
     onSubmit(query);
+
     if (query === '') {
       return toast.info('Please enter key words for search', notifications);
     }
-  };
-
-  handleChange = evt => {
-    this.setState({ value: evt.target.value });
   };
 
   render() {
@@ -35,7 +32,6 @@ export class Searchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            onChange={this.handleChange}
           />
         </Form>
         <ToastContainer />
